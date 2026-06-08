@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora BTC – Binance</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;500;700&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --panel: #13131e;
+    --card: #1a1a28;
+    --border: #2a2a40;
+    --accent: #f0a500;
+    --accent2: #00d4aa;
+    --danger: #ff4f4f;
+    --text: #e8e8f0;
+    --muted: #888;
+    --btn: #4a4aa0;
+    --btn-hover: #6060cc;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Exo 2', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 16px;
+    gap: 10px;
+  }
+
+  @keyframes brasilFlow {
+    0%   { background-color: #009c3b; }
+    25%  { background-color: #FFDF00; }
+    50%  { background-color: #002776; }
+    75%  { background-color: #e8f5e9; }
+    100% { background-color: #009c3b; }
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    animation: brasilFlow 8s ease-in-out infinite;
+    opacity: 0.55;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .aviso {
+    width: 480px;
+    max-width: 100%;
+    background: #12121a;
+    border: 1px solid #2a2a40;
+    color: #999;
+    font-size: 11px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .painel {
+    width: 480px;
+    max-width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 20px 40px rgba(0,0,0,.7);
+  }
+
+  .titulo {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .subtitulo {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    letter-spacing: 2px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+  }
+
+  .label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,0,0,.3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+  }
+
+  .prefix {
+    color: var(--accent);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 16px;
+    white-space: nowrap;
+  }
+
+  .suffix {
+    color: var(--accent);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 16px;
+  }
+
+  input {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 15px;
+    width: 100%;
+  }
+
+  input::placeholder { color: #444; }
+
+  .resultado-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .res-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .res-card.destaque {
+    border-color: var(--accent2);
+    background: rgba(0, 212, 170, .05);
+  }
+
+  .res-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  /* taxa editável dentro do res-card */
+  .taxa-edit-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    justify-content: center;
+    margin: 4px 0 6px;
+  }
+
+  .taxa-edit {
+    width: 54px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 16px;
+    color: var(--accent);
+    background: rgba(255,255,255,.05);
+    border: 1px dashed #555;
+    border-radius: 4px;
+    padding: 4px 6px;
+    text-align: center;
+    outline: none;
+  }
+
+  .taxa-edit:focus {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .taxa-suffix {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .res-valor {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 16px;
+    color: var(--text);
+    word-break: break-all;
+  }
+
+  .res-valor.verde   { color: var(--accent2); }
+  .res-valor.amarelo { color: var(--accent); }
+  .res-valor.vermelho{ color: var(--danger); }
+
+  @keyframes brasilBtn {
+    0%   { background-color: #007a2f; }
+    25%  { background-color: #c9a800; }
+    50%  { background-color: #002776; }
+    75%  { background-color: #1a5276; }
+    100% { background-color: #007a2f; }
+  }
+
+  button {
+    width: 100%;
+    border: none;
+    padding: 11px;
+    border-radius: 10px;
+    background-color: #007a2f;
+    animation: brasilBtn 8s ease-in-out infinite;
+    color: #fff;
+    cursor: pointer;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: 0 1px 3px rgba(0,0,0,.5);
+    margin-top: 4px;
+    transition: opacity .2s;
+  }
+
+  button:hover { opacity: 0.85; }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 10px 0;
+  }
+
+  .section-title {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .taxa-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 8px;
+    padding: 0 2px;
+  }
+
+  .taxa-info span { color: var(--accent); }
+
+  .footer {
+    text-align: center;
+    color: #555;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  .footer strong { color: #888; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animado { animation: fadeIn .3s ease; }
+
+  .setas {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 1px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+
+  .seta {
+    width: auto;
+    padding: 0 4px;
+    margin: 0;
+    background: rgba(255,255,255,.08);
+    border: 1px solid #444;
+    border-radius: 3px;
+    color: var(--accent);
+    font-size: 9px;
+    cursor: pointer;
+    line-height: 1.4;
+  }
+
+  .seta:hover { background: rgba(255,255,255,.18); }
+
+
+  @media (max-width: 520px) {
+    body {
+      padding: 12px 8px;
+      gap: 10px;
+    }
+
+    .painel {
+      padding: 16px 14px;
+      border-radius: 14px;
+    }
+
+    .titulo {
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .card {
+      padding: 8px 10px;
+      margin-bottom: 6px;
+    }
+
+    input {
+      font-size: 15px;
+    }
+
+    .resultado-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .res-card {
+      padding: 10px 8px;
+    }
+
+    .res-valor {
+      font-size: 13px;
+    }
+
+    .res-valor#liquido {
+      font-size: 17px !important;
+    }
+
+    .taxa-edit {
+      width: 40px;
+      font-size: 13px;
+    }
+
+    button {
+      padding: 12px;
+      font-size: 13px;
+    }
+
+    .aviso {
+      font-size: 10px;
+      padding: 8px 10px;
+    }
+
+    .section-title {
+      font-size: 10px;
+    }
+
+    .res-label {
+      font-size: 9px;
+    }
+
+    .footer {
+      font-size: 10px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="aviso">
+  ⚠️ Esta calculadora é offline e não se conecta a nenhuma corretora ou aplicativo.
+</div>
+
+<div class="painel">
+
+  <div class="titulo">₿ Calculadora BTC</div>
+  
+
+  <div class="card">
+    <div class="label">Preço atual do BTC</div>
+    <div class="input-wrap">
+      <span class="prefix">R$</span>
+      <input type="number" id="precoBTC" placeholder="Ex: 320000" oninput="calcular()">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">Quanto você vai investir</div>
+    <div class="input-wrap">
+      <span class="prefix">R$</span>
+      <input type="number" id="valorInvestido" placeholder="Ex: 100" oninput="calcular()">
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-title">Resultado da Compra</div>
+
+  <div class="resultado-grid">
+    <div class="res-card">
+      <div class="res-label">Taxa compra</div>
+      <div class="res-valor" style="display:flex;align-items:center;justify-content:center;"><input class="taxa-edit" type="text" id="taxaCompraInput" value="0.10" oninput="calcular()"><span style="color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:16px;">%</span><span class="setas"><button class="seta" onclick="ajustarTaxa('taxaCompraInput', 0.01)">▲</button><button class="seta" onclick="ajustarTaxa('taxaCompraInput', -0.01)">▼</button></span></div>
+    </div>
+    <div class="res-card destaque">
+      <div class="res-label">BTC que você recebe</div>
+      <div class="res-valor verde" id="btcRecebido">—</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-title">Para não perder nada na venda</div>
+
+  <div class="resultado-grid">
+    <div class="res-card destaque">
+      <div class="res-label">Preço mínimo de venda do BTC</div>
+      <div class="res-valor amarelo" id="precoMinVenda">—</div>
+    </div>
+    <div class="res-card">
+      <div class="res-label">Taxa venda</div>
+      <div class="res-valor" style="display:flex;align-items:center;justify-content:center;"><input class="taxa-edit" type="text" id="taxaVendaInput" value="0.10" oninput="calcular()"><span style="color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:16px;">%</span><span class="setas"><button class="seta" onclick="ajustarTaxa('taxaVendaInput', 0.01)">▲</button><button class="seta" onclick="ajustarTaxa('taxaVendaInput', -0.01)">▼</button></span></div>
+    </div>
+  </div>
+
+  <div class="card" style="text-align:center;">
+    <div class="res-label">Você recebe líquido ao vender no mínimo</div>
+    <div class="res-valor verde" id="liquido" style="font-size:18px; margin-top:2px;">—</div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-title">Simular venda acima do mínimo</div>
+
+  <div class="card">
+    <div class="label">Se o BTC chegar a (R$)</div>
+    <div class="input-wrap">
+      <span class="prefix">R$</span>
+      <input type="text" id="precoVendaSim" placeholder="Preenchido automaticamente — edite à vontade" oninput="simularLucro()" onpaste="tratarCola(event)">
+    </div>
+  </div>
+
+  <div class="resultado-grid">
+    <div class="res-card">
+      <div class="res-label">Você receberia (líquido)</div>
+      <div class="res-valor verde" id="simLiquido">—</div>
+    </div>
+    <div class="res-card destaque">
+      <div class="res-label">Lucro</div>
+      <div class="res-valor verde" id="simLucro">—</div>
+    </div>
+  </div>
+
+  <button onclick="limpar()">🗑 Limpar</button>
+
+</div>
+
+<div class="footer">
+  <strong>Calculadora BTC</strong><br>
+  Criado por Carlos Cunha Vilela<br>
+  <span id="dataFooter"></span>
+</div>
+
+<script>
+  const fmt    = v => 'R$ ' + parseFloat(v).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  const fmtBTC = v => v.toFixed(8) + ' BTC';
+  const fmtPct = v => v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}) + '%';
+
+  document.getElementById('dataFooter').textContent = new Date().toLocaleDateString('pt-BR');
+
+
+  function ajustarTaxa(id, delta) {
+    const el = document.getElementById(id);
+    let val = parseFloat(el.value.replace(',', '.')) || 0;
+    val = Math.max(0, Math.round((val + delta) * 100) / 100);
+    el.value = val.toFixed(2).replace('.', ',');
+    calcular();
+  }
+
+  function getTaxas() {
+    const tc = parseFloat(document.getElementById('taxaCompraInput').value.replace(',','.')) || 0;
+    const tv = parseFloat(document.getElementById('taxaVendaInput').value.replace(',','.'))  || 0;
+    return { tc: tc / 100, tv: tv / 100 };
+  }
+
+  function limparNumero(val) {
+    let s = String(val).replace(/R\$\s*/g, '').trim();
+    if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
+    return parseFloat(s);
+  }
+
+  function tratarCola(e) {
+    e.preventDefault();
+    let texto = (e.clipboardData || window.clipboardData).getData('text');
+    texto = texto.replace(/R\$\s*/g, '').replace(/\s/g, '');
+    if (texto.includes(',')) texto = texto.replace(/\./g, '').replace(',', '.');
+    document.getElementById('precoVendaSim').value = texto;
+    simularLucro();
+  }
+
+  function calcular() {
+    const { tc, tv } = getTaxas();
+    const preco     = parseFloat(document.getElementById('precoBTC').value);
+    const investido = parseFloat(document.getElementById('valorInvestido').value);
+
+    if (!preco || !investido || preco <= 0 || investido <= 0) {
+      ['btcRecebido','precoMinVenda','liquido'].forEach(id => {
+        document.getElementById(id).textContent = '—';
+      });
+      return;
+    }
+
+    const taxaCompraVal = investido * tc;
+    const investidoLiq  = investido - taxaCompraVal;
+    const btcRecebido   = investidoLiq / preco;
+    const precoMin      = investido / (btcRecebido * (1 - tv));
+    const taxaVendaVal  = btcRecebido * precoMin * tv;
+    const liquidoVenda  = btcRecebido * precoMin - taxaVendaVal;
+
+    
+    set('btcRecebido',   fmtBTC(btcRecebido), 'verde');
+    set('precoMinVenda', fmt(precoMin), 'amarelo');
+    
+    set('liquido',       fmt(liquidoVenda), 'verde');
+
+    document.getElementById('precoVendaSim').value = precoMin.toFixed(2).replace('.', ',');
+    simularLucro();
+  }
+
+  function simularLucro() {
+    const { tc, tv } = getTaxas();
+    const preco       = parseFloat(document.getElementById('precoBTC').value);
+    const investido   = parseFloat(document.getElementById('valorInvestido').value);
+    const precoSimVal = limparNumero(document.getElementById('precoVendaSim').value);
+
+    if (!preco || !investido || !precoSimVal || preco <= 0 || investido <= 0 || precoSimVal <= 0) {
+      set('simLiquido', '—', '');
+      set('simLucro',   '—', '');
+      return;
+    }
+
+    const taxaCompraVal = investido * tc;
+    const btcRecebido   = (investido - taxaCompraVal) / preco;
+    const brutoSim      = btcRecebido * precoSimVal;
+    const liqSim        = brutoSim - (brutoSim * tv);
+    const lucro         = liqSim - investido;
+
+    set('simLiquido', fmt(liqSim), 'verde');
+    const cor = lucro >= 0 ? 'verde' : 'vermelho';
+    document.getElementById('simLucro').textContent = (lucro >= 0 ? '+' : '') + fmt(lucro);
+    document.getElementById('simLucro').className   = 'res-valor ' + cor;
+  }
+
+  function set(id, texto, cor) {
+    const el = document.getElementById(id);
+    el.textContent = texto;
+    el.className = 'res-valor ' + (cor ? cor + ' animado' : '');
+    setTimeout(() => el.classList.remove('animado'), 400);
+  }
+
+  function limpar() {
+    ['precoBTC','valorInvestido','precoVendaSim'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('taxaCompraInput').value = '0.10';
+    document.getElementById('taxaVendaInput').value  = '0.10';
+    getTaxas();
+    ['btcRecebido','precoMinVenda','liquido','simLiquido','simLucro'].forEach(id => {
+      document.getElementById(id).textContent = '—';
+      document.getElementById(id).className = 'res-valor';
+    });
+  }
+
+  getTaxas();
+</script>
+
+</body>
+</html>
