@@ -3,29 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora BTC – Binance</title>
+<title>Calculadora Cripto – Binance Pro</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;500;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
   :root {
     --bg: #0a0a0f;
     --panel: #13131e;
     --card: #1a1a28;
     --border: #2a2a40;
-    --accent: #f0a500;
-    --accent2: #00d4aa;
+    --border2: #475569;
+    --accent: #f0a500; /* Bitcoin Gold Dinâmico */
+    --accent2: #00d4aa; /* Neon Green */
     --danger: #ff4f4f;
     --text: #e8e8f0;
-    --muted: #888;
-    --btn: #4a4aa0;
-    --btn-hover: #6060cc;
+    --muted: #64748b;
+    --muted2: #94a3b8;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     background: var(--bg);
-    font-family: 'Exo 2', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     color: var(--text);
     min-height: 100vh;
     display: flex;
@@ -33,6 +33,18 @@
     align-items: center;
     padding: 16px 16px;
     gap: 10px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    animation: brasilFlow 8s ease-in-out infinite;
+    opacity: 0.08; 
+    pointer-events: none;
+    z-index: -1;
   }
 
   @keyframes brasilFlow {
@@ -43,14 +55,52 @@
     100% { background-color: #009c3b; }
   }
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    animation: brasilFlow 8s ease-in-out infinite;
-    opacity: 0.55;
-    pointer-events: none;
-    z-index: -1;
+  /* ── SELETOR DE CRIPTOMOEDAS RESPONSIVO ── */
+  .crypto-selector {
+    display: flex;
+    gap: 4px;
+    width: 480px;
+    max-width: 100%;
+    margin-bottom: 2px;
+    justify-content: space-between;
+  }
+
+  .crypto-btn {
+    flex: 1;
+    padding: 8px 4px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--muted2);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+  }
+
+  .crypto-btn.active {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: var(--accent);
+    color: var(--text);
+    box-shadow: 0 0 12px var(--accent);
+  }
+
+  .crypto-btn:hover:not(.active) {
+    border-color: var(--border2);
+    color: var(--text);
+  }
+
+  .crypto-icon {
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+    transition: transform 0.3s ease;
   }
 
   .aviso {
@@ -76,22 +126,22 @@
     box-shadow: 0 20px 40px rgba(0,0,0,.7);
   }
 
-  .titulo {
-    text-align: center;
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    margin-bottom: 4px;
-    color: var(--accent);
-    text-transform: uppercase;
+  .titulo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
   }
 
-  .subtitulo {
+  .titulo {
     text-align: center;
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 12px;
-    letter-spacing: 2px;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: var(--accent);
+    text-transform: uppercase;
+    transition: color 0.3s ease;
   }
 
   .card {
@@ -104,10 +154,11 @@
 
   .label {
     font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 1.5px;
+    color: var(--muted2);
+    letter-spacing: 1px;
     text-transform: uppercase;
     margin-bottom: 6px;
+    font-weight: 700;
   }
 
   .input-wrap {
@@ -118,6 +169,12 @@
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 8px 10px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .input-wrap:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
   }
 
   .prefix {
@@ -125,12 +182,7 @@
     font-family: 'Share Tech Mono', monospace;
     font-size: 16px;
     white-space: nowrap;
-  }
-
-  .suffix {
-    color: var(--accent);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 16px;
+    transition: color 0.3s ease;
   }
 
   input {
@@ -161,25 +213,18 @@
   }
 
   .res-card.destaque {
-    border-color: var(--accent2);
-    background: rgba(0, 212, 170, .05);
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.01);
+    transition: border-color 0.3s ease;
   }
 
   .res-label {
     font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 1.5px;
+    color: var(--muted2);
+    letter-spacing: 1px;
     text-transform: uppercase;
     margin-bottom: 4px;
-  }
-
-  /* taxa editável dentro do res-card */
-  .taxa-edit-wrap {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    justify-content: center;
-    margin: 4px 0 6px;
+    font-weight: 700;
   }
 
   .taxa-edit {
@@ -193,16 +238,12 @@
     padding: 4px 6px;
     text-align: center;
     outline: none;
+    transition: color 0.3s ease, border-color 0.3s ease;
   }
 
   .taxa-edit:focus {
     border-color: var(--accent);
     color: var(--accent);
-  }
-
-  .taxa-suffix {
-    font-size: 11px;
-    color: var(--muted);
   }
 
   .res-valor {
@@ -213,16 +254,8 @@
   }
 
   .res-valor.verde   { color: var(--accent2); }
-  .res-valor.amarelo { color: var(--accent); }
+  .res-valor.amarelo { color: var(--accent); transition: color 0.3s ease; }
   .res-valor.vermelho{ color: var(--danger); }
-
-  @keyframes brasilBtn {
-    0%   { background-color: #007a2f; }
-    25%  { background-color: #c9a800; }
-    50%  { background-color: #002776; }
-    75%  { background-color: #1a5276; }
-    100% { background-color: #007a2f; }
-  }
 
   button {
     width: 100%;
@@ -233,7 +266,7 @@
     animation: brasilBtn 8s ease-in-out infinite;
     color: #fff;
     cursor: pointer;
-    font-family: 'Exo 2', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 15px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -241,6 +274,14 @@
     text-shadow: 0 1px 3px rgba(0,0,0,.5);
     margin-top: 4px;
     transition: opacity .2s;
+  }
+
+  @keyframes brasilBtn {
+    0%   { background-color: #007a2f; }
+    25%  { background-color: #c9a800; }
+    50%  { background-color: #002776; }
+    75%  { background-color: #1a5276; }
+    100% { background-color: #007a2f; }
   }
 
   button:hover { opacity: 0.85; }
@@ -257,18 +298,8 @@
     letter-spacing: 2px;
     text-transform: uppercase;
     margin-bottom: 6px;
+    font-weight: 700;
   }
-
-  .taxa-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 8px;
-    padding: 0 2px;
-  }
-
-  .taxa-info span { color: var(--accent); }
 
   .footer {
     text-align: center;
@@ -304,15 +335,27 @@
     font-size: 9px;
     cursor: pointer;
     line-height: 1.4;
+    transition: color 0.3s ease;
   }
 
   .seta:hover { background: rgba(255,255,255,.18); }
 
-
+  /* Ajustes móveis calibrados para o celular */
   @media (max-width: 520px) {
     body {
       padding: 12px 8px;
       gap: 10px;
+    }
+
+    .crypto-btn {
+      font-size: 9.5px !important;
+      padding: 6px 2px !important;
+      gap: 3px !important;
+    }
+
+    .crypto-icon {
+      width: 11px !important;
+      height: 11px !important;
     }
 
     .painel {
@@ -321,8 +364,7 @@
     }
 
     .titulo {
-      font-size: 18px;
-      margin-bottom: 4px;
+      font-size: 15px;
     }
 
     .card {
@@ -344,11 +386,11 @@
     }
 
     .res-valor {
-      font-size: 13px;
+      font-size: 11.5px;
     }
 
     .res-valor#liquido {
-      font-size: 17px !important;
+      font-size: 16px !important;
     }
 
     .taxa-edit {
@@ -383,27 +425,65 @@
 <body>
 
 <div class="aviso">
-  ⚠️ Esta calculadora é offline e não se conecta a nenhuma corretora ou aplicativo.
+  📊 <strong>Simulador de Ponto de Equilíbrio (Break-Even):</strong> Esta ferramenta offline projeta suas taxas de compra e venda da Binance para revelar o preço exato de saída necessário para não perder dinheiro, simulando seu lucro real sem expor seus dados ou chaves de API.
+</div>
+
+<!-- BARRA DE SELEÇÃO RÁPIDA COM LOGOS VETORIAIS OFICIAIS (SVG) -->
+<div class="crypto-selector">
+  <button class="crypto-btn active" id="btn-crypto-btc" onclick="selecionarCrypto('btc')">
+    <svg class="crypto-icon" viewBox="0 0 24 24" fill="#F3BA2F"><path d="M23.638 14.073c-.45-1.81-1.615-3.155-3.328-3.793 1.25-.66 2.055-1.742 2.304-3.17-.294-1.688-.236-3.15-1.503-4.148-1.047-.826-2.5-1.162-4.123-1.157L16.988 1.8V0h-3.033v1.8h-1.89V0H9.032v1.8H5.97v2.247c1.393.003 2.155.437 2.14 1.348l-.01 9.682c.005.626-.547.962-1.714.954l-1.393.003V19.3h3.063v1.8h3.032V19.3h1.89v1.8h3.033V19.3c3.486.007 5.76-.713 6.643-3.18.59-1.66.423-3.522-.162-5.112zM12.016 4.908h3.337c1.077 0 1.83.178 2.215.753.376.561.346 1.344-.067 1.895-.417.553-1.25.751-2.483.743h-3.002V4.908zm0 6.657h3.766c1.196 0 1.956.243 2.345.823.364.545.318 1.488-.13 2.072-.44.577-1.312.753-2.678.742h-3.303v-3.637z"/></svg>
+    BTC
+  </button>
+  <button class="crypto-btn" id="btn-crypto-usdt" onclick="selecionarCrypto('usdt')">
+    <svg class="crypto-icon" viewBox="0 0 24 24" fill="#26A17B"><path d="M12 24c6.627 0 12-5.373 12-12S19.627 0 12 0 0 5.373 0 12s5.373 12 12 12zm1.25-16.142v2.544c1.942.112 3.424.516 3.424 1.004 0 .487-1.482.891-3.424 1.004v6.868h-2.5v-6.868c-1.942-.112-3.424-.516-3.424-1.004 0-.487 1.482-.891 3.424-1.004V7.858h-3.75V5.142h11v2.716h-3.75z"/></svg>
+    USDT
+  </button>
+  <button class="crypto-btn" id="btn-crypto-ada" onclick="selecionarCrypto('ada')">
+    <svg class="crypto-icon" viewBox="0 0 24 24" fill="#3b82f6"><path d="M12 0c6.627 0 12 5.373 12 12S19.627 24 12 24 0 18.627 0 12 5.373 0 12 0zm3.435 6.045c-.482-.444-1.066-.374-1.424.116-.363.49-.247 1.114.237 1.558.484.444 1.065.374 1.424-.116.362-.49.247-1.114-.237-1.558zm-6.87 0c-.484.444-.6 1.068-.237 1.558.36.49.94.56 1.424.116.484-.444.6-1.068.237-1.558-.36-.49-.94-.56-1.424-.116zm7.235 6.467c-.218.624.16 1.257.73 1.455.57.198 1.144-.06 1.36-.684.218-.624-.16-1.257-.73-1.455-.57-.198-1.144.06-1.36.684zm-11.6 0c-.216-.624-.79-.882-1.36-.684-.57.198-.948.831-.73 1.455.218.624.79.882 1.36.684.57-.198.948-.831.73-1.455zm8.17 4.962c.162.64.757.98 1.32.75.564-.23.83-.93.667-1.57-.163-.64-.758-.98-1.32-.75-.563.23-.83.93-.667 1.57zm-4.74 0c.163-.64-.104-1.34-.667-1.57-.563-.23 1.157.11-1.32.75-.163.64.104 1.34.667 1.57.563.23 1.157-.11 1.32-.75z"/></svg>
+    ADA
+  </button>
+  <button class="crypto-btn" id="btn-crypto-eth" onclick="selecionarCrypto('eth')">
+    <svg class="crypto-icon" viewBox="0 0 24 24" fill="#a78bfa"><path d="M12 0L4.62 12.22 12 16.58l7.38-4.36L12 0zm0 18.28l-7.38-4.36L12 24l7.38-10.08-7.38 4.36z"/></svg>
+    ETH
+  </button>
+  <button class="crypto-btn" id="btn-crypto-sol" onclick="selecionarCrypto('sol')">
+    <svg class="crypto-icon" viewBox="0 0 24 24" fill="#00FFA3"><path d="M0 3.75L3.75 0h20.25l-3.75 3.75H0zm0 7.5l3.75-3.75h20.25l-3.75 3.75H0zm0 7.5l3.75-3.75h20.25l-3.75 3.75H0z"/></svg>
+    SOL
+  </button>
 </div>
 
 <div class="painel">
 
-  <div class="titulo">₿ Calculadora BTC</div>
+  <!-- TÍTULO DINÂMICO CENTRALIZADO -->
+  <div class="titulo-container">
+    <span id="titulo-icon-area"></span>
+    <div class="titulo" id="painel-titulo">Calculadora BTC/BRL</div>
+  </div>
   
-
+  <!-- PREÇO ATUAL (MÁSCARA DE DIGITAÇÃO REMOVIDA PARA PERMITIR FRAÇÕES DECIMAIS) -->
   <div class="card">
-    <div class="label">Preço atual do BTC</div>
+    <div class="label" id="label-preco">Preço atual do BTC</div>
     <div class="input-wrap">
       <span class="prefix">R$</span>
-      <input type="number" id="precoBTC" placeholder="Ex: 320000" oninput="calcular()">
+      <input type="text" inputmode="decimal" id="precoBTC" placeholder="0,00" oninput="calcular()">
     </div>
   </div>
 
+  <!-- VALOR INVESTIDO (MÁSCARA PRESERVADA POIS INVESTIMENTO É SEMPRE 2 CASAS DECIMAIS) -->
   <div class="card">
     <div class="label">Quanto você vai investir</div>
     <div class="input-wrap">
       <span class="prefix">R$</span>
-      <input type="number" id="valorInvestido" placeholder="Ex: 100" oninput="calcular()">
+      <input type="text" inputmode="decimal" id="valorInvestido" placeholder="0,00" oninput="formatarMoeda(this); calcular()">
+    </div>
+    <!-- Alerta de limite mínimo dinâmico -->
+    <div id="avisoMinimo" style="display:none; color:var(--danger); font-size:10.5px; margin-top:4px; font-weight:700; text-align:left;"></div>
+  </div>
+
+  <div class="card" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; margin-bottom: 8px;">
+    <div class="label" style="margin-bottom: 0;">Pagar taxas com BNB? <span style="color: var(--accent2); font-size: 9px; font-weight: 700;">25% DESC.</span></div>
+    <div class="setas">
+      <button class="seta" id="btnBNB" onclick="toggleBNB()" style="padding: 4px 12px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11.5px; font-weight: 700; width:auto; margin-top:0; border-radius: 6px; border: 1px solid var(--border); animation:none; background-color:#007a2f;">Ativar (0,075%)</button>
     </div>
   </div>
 
@@ -414,10 +494,17 @@
   <div class="resultado-grid">
     <div class="res-card">
       <div class="res-label">Taxa compra</div>
-      <div class="res-valor" style="display:flex;align-items:center;justify-content:center;"><input class="taxa-edit" type="text" id="taxaCompraInput" value="0.10" oninput="calcular()"><span style="color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:16px;">%</span><span class="setas"><button class="seta" onclick="ajustarTaxa('taxaCompraInput', 0.01)">▲</button><button class="seta" onclick="ajustarTaxa('taxaCompraInput', -0.01)">▼</button></span></div>
+      <div class="res-valor" style="display:flex;align-items:center;justify-content:center;">
+        <input class="taxa-edit" type="text" inputmode="decimal" id="taxaCompraInput" value="0,10" oninput="calcular()">
+        <span style="color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:16px;">%</span>
+        <span class="setas">
+          <button class="seta" onclick="ajustarTaxa('taxaCompraInput', 0.01)">▲</button>
+          <button class="seta" onclick="ajustarTaxa('taxaCompraInput', -0.01)">▼</button>
+        </span>
+      </div>
     </div>
     <div class="res-card destaque">
-      <div class="res-label">BTC que você recebe</div>
+      <div class="res-label" id="label-recebe">BTC que você recebe</div>
       <div class="res-valor verde" id="btcRecebido">—</div>
     </div>
   </div>
@@ -428,12 +515,19 @@
 
   <div class="resultado-grid">
     <div class="res-card destaque">
-      <div class="res-label">Preço mínimo de venda do BTC</div>
+      <div class="res-label" id="label-min-venda">Preço mínimo de venda do BTC</div>
       <div class="res-valor amarelo" id="precoMinVenda">—</div>
     </div>
     <div class="res-card">
       <div class="res-label">Taxa venda</div>
-      <div class="res-valor" style="display:flex;align-items:center;justify-content:center;"><input class="taxa-edit" type="text" id="taxaVendaInput" value="0.10" oninput="calcular()"><span style="color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:16px;">%</span><span class="setas"><button class="seta" onclick="ajustarTaxa('taxaVendaInput', 0.01)">▲</button><button class="seta" onclick="ajustarTaxa('taxaVendaInput', -0.01)">▼</button></span></div>
+      <div class="res-valor" style="display:flex;align-items:center;justify-content:center;">
+        <input class="taxa-edit" type="text" inputmode="decimal" id="taxaVendaInput" value="0,10" oninput="calcular()">
+        <span style="color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:16px;">%</span>
+        <span class="setas">
+          <button class="seta" onclick="ajustarTaxa('taxaVendaInput', 0.01)">▲</button>
+          <button class="seta" onclick="ajustarTaxa('taxaVendaInput', -0.01)">▼</button>
+        </span>
+      </div>
     </div>
   </div>
 
@@ -446,11 +540,12 @@
 
   <div class="section-title">Simular venda acima do mínimo</div>
 
+  <!-- SE CHEGAR A... (MÁSCARA DE DIGITAÇÃO REMOVIDA PARA PERMITIR QUALQUER DIGITAÇÃO DECIMAL COMO 0,89 OU 2,548) -->
   <div class="card">
-    <div class="label">Se o BTC chegar a (R$)</div>
+    <div class="label" id="label-chegar">Se o BTC chegar a (R$)</div>
     <div class="input-wrap">
       <span class="prefix">R$</span>
-      <input type="text" id="precoVendaSim" placeholder="Preenchido automaticamente — edite à vontade" oninput="simularLucro()" onpaste="tratarCola(event)">
+      <input type="text" inputmode="decimal" id="precoVendaSim" placeholder="0,00" oninput="simularLucro()" onpaste="tratarCola(event)">
     </div>
   </div>
 
@@ -470,57 +565,198 @@
 </div>
 
 <div class="footer">
-  <strong>Calculadora BTC</strong><br>
+  <strong>Calculadora Cripto</strong><br>
   Criado por Carlos Cunha Vilela<br>
   <span id="dataFooter"></span>
 </div>
 
 <script>
-  const fmt    = v => 'R$ ' + parseFloat(v).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
-  const fmtBTC = v => v.toFixed(8) + ' BTC';
+  // CONFIGURAÇÃO DOS LOGOTIPOS VETORIAIS OFICIAIS (SVG) EM ALTA DEFINIÇÃO (HD) COM CORES DINÂMICAS DE ACORDO COM A IDENTIDADE DE CADA MOEDA
+  const COIN_CONFIG = {
+    btc: { 
+      symbol: '₿', name: 'BTC', decimals: 8, placeholderPrice: '320.000,00', minAmount: 0.00001,
+      color: '#F3BA2F', // Bitcoin Gold
+      icon: '<svg class="crypto-icon" viewBox="0 0 24 24" fill="#F3BA2F" style="width: 18px; height: 18px; vertical-align: middle;"><path d="M23.638 14.073c-.45-1.81-1.615-3.155-3.328-3.793 1.25-.66 2.055-1.742c2.304-3.17-.294-1.688-.236-3.15-1.503-4.148-1.047-.826-2.5-1.162-4.123-1.157L16.988 1.8V0h-3.033v1.8h-1.89V0H9.032v1.8H5.97v2.247c1.393.003 2.155.437 2.14 1.348l-.01 9.682c.005.626-.547.962-1.714.954l-1.393.003V19.3h3.063v1.8h3.032V19.3h1.89v1.8h3.033V19.3c3.486.007 5.76-.713 6.643-3.18.59-1.66.423-3.522-.162-5.112zM12.016 4.908h3.337c1.077 0 1.83.178 2.215.753.376.561.346 1.344-.067 1.895-.417.553-1.25.751-2.483.743h-3.002V4.908zm0 6.657h3.766c1.196 0 1.956.243 2.345.823.364.545.318 1.488-.13 2.072-.44.577-1.312.753-2.678.742h-3.303v-3.637z"/></svg>'
+    },
+    usdt: { 
+      symbol: '$', name: 'USDT', decimals: 2, placeholderPrice: '5,50', minAmount: 1.0,
+      color: '#26A17B', // Tether Green
+      icon: '<svg class="crypto-icon" viewBox="0 0 24 24" fill="#26A17B" style="width: 18px; height: 18px; vertical-align: middle;"><path d="M12 24c6.627 0 12-5.373 12-12S19.627 0 12 0 0 5.373 0 12s5.373 12 12 12zm1.25-16.142v2.544c1.942.112 3.424.516 3.424 1.004 0 .487-1.482.891-3.424 1.004v6.868h-2.5v-6.868c-1.942-.112-3.424-.516-3.424-1.004 0-.487 1.482-.891 3.424-1.004V7.858h-3.75V5.142h11v2.716h-3.75z"/></svg>'
+    },
+    ada: { 
+      symbol: '₳', name: 'ADA', decimals: 2, placeholderPrice: '2,50', minAmount: 1.0,
+      color: '#3b82f6', // Cardano Blue
+      icon: '<svg class="crypto-icon" viewBox="0 0 24 24" fill="#3b82f6" style="width: 18px; height: 18px; vertical-align: middle;"><path d="M12 0c6.627 0 12 5.373 12 12S19.627 24 12 24 0 18.627 0 12 5.373 0 12 0zm3.435 6.045c-.482-.444-1.066-.374-1.424.116-.363.49-.247 1.114.237 1.558.484.444 1.065.374 1.424-.116.362-.49.247-1.114-.237-1.558zm-6.87 0c-.484.444-.6 1.068-.237 1.558.36.49.94.56 1.424.116.484-.444.6-1.068.237-1.558-.36-.49-.94-.56-1.424-.116zm7.235 6.467c-.218.624.16 1.257.73 1.455.57.198 1.144-.06 1.36-.684.218-.624-.16-1.257-.73-1.455-.57-.198-1.144.06-1.36.684zm-11.6 0c-.216-.624-.79-.882-1.36-.684-.57.198-.948.831-.73 1.455.218.624.79.882 1.36.684.57-.198.948-.831.73-1.455zm8.17 4.962c.162.64.757.98 1.32.75.564-.23.83-.93.667-1.57-.163-.64-.758-.98-1.32-.75-.563.23-.83.93-.667 1.57zm-4.74 0c.163-.64-.104-1.34-.667-1.57-.563-.23 1.157.11-1.32.75-.163.64.104 1.34.667 1.57.563.23 1.157-.11 1.32-.75z"/></svg>'
+    },
+    eth: { 
+      symbol: 'Ξ', name: 'ETH', decimals: 8, placeholderPrice: '18.000,00', minAmount: 0.0001,
+      color: '#a78bfa', // Ethereum Purple
+      icon: '<svg class="crypto-icon" viewBox="0 0 24 24" fill="#a78bfa" style="width: 18px; height: 18px; vertical-align: middle;"><path d="M12 0L4.62 12.22 12 16.58l7.38-4.36L12 0zm0 18.28l-7.38-4.36L12 24l7.38-10.08-7.38 4.36z"/></svg>'
+    },
+    sol: { 
+      symbol: '◎', name: 'SOL', decimals: 4, placeholderPrice: '800,00', minAmount: 0.01,
+      color: '#00FFA3', // Solana Mint Green
+      icon: '<svg class="crypto-icon" viewBox="0 0 24 24" fill="#00FFA3" style="width: 18px; height: 18px; vertical-align: middle;"><path d="M0 3.75L3.75 0h20.25l-3.75 3.75H0zm0 7.5l3.75-3.75h20.25l-3.75 3.75H0zm0 7.5l3.75-3.75h20.25l-3.75 3.75H0z"/></svg>'
+    }
+  };
+
+  let _cryptoSelecionada = 'btc';
+  let _usarBNB = false;
+
+  // FORMATADOR DINÂMICO DE ALTA PRECISÃO FIAT (Se for menor que R$ 10,00, exibe até 8 casas decimais para manter a precisão das moedas baratas como ADA)
+  const fmt = v => {
+    const val = parseFloat(v);
+    if (isNaN(val) || val === null) return 'R$ 0,00';
+    if (val > -10.00 && val < 10.00 && val !== 0) {
+      return 'R$ ' + val.toLocaleString('pt-BR', {minimumFractionDigits:4, maximumFractionDigits:8});
+    }
+    return 'R$ ' + val.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  };
+
+  // FORMATADOR DINÂMICO DOS PREÇOS DE MOEDAS BARATAS PARA PRESERVAR AS CASAS DECIMAIS NA DIGITAÇÃO (Simulado ou Real)
+  const fmtInput = v => {
+    const val = parseFloat(v);
+    if (isNaN(val) || val === null) return '';
+    if (val > 0 && val < 10) {
+      return val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 8});
+    }
+    return val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  };
+
+  const fmtCrypto = (v, coin) => {
+    const config = COIN_CONFIG[coin];
+    return v.toLocaleString('pt-BR', {
+      minimumFractionDigits: config.decimals,
+      maximumFractionDigits: config.decimals
+    }) + ' ' + config.name;
+  };
+
   const fmtPct = v => v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}) + '%';
 
   document.getElementById('dataFooter').textContent = new Date().toLocaleDateString('pt-BR');
 
+  // MÁSCARA DE MOEDA BRASILEIRA EM TEMPO REAL (MANTIDA SÓ NO VALOR INVESTIDO, POIS ELE É SEMPRE FIAT 2 CASAS DECIMAIS)
+  function formatarMoeda(input) {
+    let valor = input.value.replace(/\D/g, ""); 
+    if (!valor) {
+      input.value = "";
+      return;
+    }
+    let num = (parseFloat(valor) / 100);
+    input.value = num.toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  // CONTROLE DO BOTÃO BNB (TAXA REDUZIDA PARA 0,075% EXCLUSIVA DA BINANCE)
+  function toggleBNB() {
+    _usarBNB = !_usarBNB;
+    const btn = document.getElementById('btnBNB');
+    const inputCompra = document.getElementById('taxaCompraInput');
+    const inputVenda = document.getElementById('taxaVendaInput');
+    
+    if (_usarBNB) {
+      btn.textContent = 'Ativo (0,075%)';
+      btn.style.backgroundColor = '#00d4aa';
+      btn.style.borderColor = '#00d4aa';
+      btn.style.color = '#0a0a0f';
+      if (inputCompra) inputCompra.value = '0,075';
+      if (inputVenda) inputVenda.value = '0,075';
+    } else {
+      btn.textContent = 'Ativar (0,075%)';
+      btn.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
+      btn.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+      btn.style.color = '#94a3b8';
+      if (inputCompra) inputCompra.value = '0,10';
+      if (inputVenda) inputVenda.value = '0,10';
+    }
+    calcular();
+  }
 
   function ajustarTaxa(id, delta) {
     const el = document.getElementById(id);
     let val = parseFloat(el.value.replace(',', '.')) || 0;
     val = Math.max(0, Math.round((val + delta) * 100) / 100);
-    el.value = val.toFixed(2).replace('.', ',');
+    el.value = val.toFixed(3).replace('.', ','); // Ajustado para aceitar 3 decimais se necessário
     calcular();
   }
 
+  // NORMALIZADOR INTELIGENTE (Decodifica o ponto de milhar e a vírgula de forma 100% precisa tanto no padrão US quanto no BR)
+  function parseInputVal(id) {
+    const el = document.getElementById(id);
+    if (!el) return 0;
+    let raw = el.value.trim();
+    if (!raw) return 0;
+    
+    raw = raw.replace(/R\$\s*/gi, '').replace(/\s/g, '');
+    
+    if (raw.includes(',') && raw.includes('.')) {
+      raw = raw.replace(/\./g, '').replace(',', '.');
+    } else if (raw.includes(',')) {
+      raw = raw.replace(',', '.');
+    } else {
+      // Diferencia ponto de milhar de ponto decimal (US)
+      const lastDotIdx = raw.lastIndexOf('.');
+      if (lastDotIdx !== -1) {
+        const charsAfterDot = raw.length - 1 - lastDotIdx;
+        if (charsAfterDot === 3) {
+          raw = raw.replace(/\./g, '');
+        }
+      }
+    }
+    
+    const num = parseFloat(raw);
+    return isNaN(num) ? 0 : num;
+  }
+
   function getTaxas() {
-    const tc = parseFloat(document.getElementById('taxaCompraInput').value.replace(',','.')) || 0;
-    const tv = parseFloat(document.getElementById('taxaVendaInput').value.replace(',','.'))  || 0;
+    const tc = parseInputVal('taxaCompraInput') || 0;
+    const tv = parseInputVal('taxaVendaInput') || 0;
     return { tc: tc / 100, tv: tv / 100 };
   }
 
+  // Tratador aprimorado de inputs de simulação
   function limparNumero(val) {
-    let s = String(val).replace(/R\$\s*/g, '').trim();
-    if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
-    return parseFloat(s);
+    if (typeof val === 'number') return val;
+    let s = String(val).replace(/R\$\s*/gi, '').replace(/\s/g, '').trim();
+    if (s.includes(',')) {
+      s = s.replace(/\./g, '').replace(',', '.');
+    } else {
+      const lastDotIdx = s.lastIndexOf('.');
+      if (lastDotIdx !== -1) {
+        const charsAfterDot = s.length - 1 - lastDotIdx;
+        if (charsAfterDot === 3) {
+          s = s.replace(/\./g, '');
+        }
+      }
+    }
+    return parseFloat(s) || 0;
   }
 
   function tratarCola(e) {
     e.preventDefault();
     let texto = (e.clipboardData || window.clipboardData).getData('text');
-    texto = texto.replace(/R\$\s*/g, '').replace(/\s/g, '');
-    if (texto.includes(',')) texto = texto.replace(/\./g, '').replace(',', '.');
-    document.getElementById('precoVendaSim').value = texto;
+    texto = texto.replace(/R\$\s*/gi, '').replace(/\s/g, '');
+    
+    let num = parseFloat(texto.replace(/\./g, '').replace(',', '.')) || 0;
+    const el = e.target;
+    el.value = fmtInput(num);
+    
     simularLucro();
   }
 
   function calcular() {
     const { tc, tv } = getTaxas();
-    const preco     = parseFloat(document.getElementById('precoBTC').value);
-    const investido = parseFloat(document.getElementById('valorInvestido').value);
+    const preco     = parseInputVal('precoBTC');
+    const investido = parseInputVal('valorInvestido');
 
     if (!preco || !investido || preco <= 0 || investido <= 0) {
       ['btcRecebido','precoMinVenda','liquido'].forEach(id => {
         document.getElementById(id).textContent = '—';
       });
+      const elAvisoMin = document.getElementById('avisoMinimo');
+      if (elAvisoMin) elAvisoMin.style.display = 'none';
       return;
     }
 
@@ -531,20 +767,33 @@
     const taxaVendaVal  = btcRecebido * precoMin * tv;
     const liquidoVenda  = btcRecebido * precoMin - taxaVendaVal;
 
-    
-    set('btcRecebido',   fmtBTC(btcRecebido), 'verde');
+    set('btcRecebido',   fmtCrypto(btcRecebido, _cryptoSelecionada), 'verde');
     set('precoMinVenda', fmt(precoMin), 'amarelo');
-    
     set('liquido',       fmt(liquidoVenda), 'verde');
 
-    document.getElementById('precoVendaSim').value = precoMin.toFixed(2).replace('.', ',');
+    // EXIBIÇÃO DE ALERTA DE COMPRA MÍNIMA ADAPTÁVEL POR MOEDA (BINANCE LIMITS)
+    const config = COIN_CONFIG[_cryptoSelecionada];
+    const elAvisoMin = document.getElementById('avisoMinimo');
+    if (elAvisoMin) {
+      if (btcRecebido < config.minAmount) {
+        // Calcula o investimento mínimo necessário em BRL para atingir a fração de 0.00001 BTC líquido
+        const minInvestimento = (config.minAmount * preco) / (1 - tc);
+        elAvisoMin.textContent = `⚠️ Abaixo de ${config.minAmount} ${config.name} (Investimento mín: ${fmt(minInvestimento)})`;
+        elAvisoMin.style.display = 'block';
+      } else {
+        elAvisoMin.style.display = 'none';
+      }
+    }
+
+    // Preenche o simulador de venda automaticamente no formato adequado à escala de preço do ativo
+    document.getElementById('precoVendaSim').value = fmtInput(precoMin);
     simularLucro();
   }
 
   function simularLucro() {
     const { tc, tv } = getTaxas();
-    const preco       = parseFloat(document.getElementById('precoBTC').value);
-    const investido   = parseFloat(document.getElementById('valorInvestido').value);
+    const preco       = parseInputVal('precoBTC');
+    const investido   = parseInputVal('valorInvestido');
     const precoSimVal = limparNumero(document.getElementById('precoVendaSim').value);
 
     if (!preco || !investido || !precoSimVal || preco <= 0 || investido <= 0 || precoSimVal <= 0) {
@@ -560,22 +809,35 @@
     const lucro         = liqSim - investido;
 
     set('simLiquido', fmt(liqSim), 'verde');
-    const cor = lucro >= 0 ? 'verde' : 'vermelho';
-    document.getElementById('simLucro').textContent = (lucro >= 0 ? '+' : '') + fmt(lucro);
-    document.getElementById('simLucro').className   = 'res-valor ' + cor;
+    
+    let col = 'verde';
+    if (Math.round(lucro * 100) / 100 < 0) {
+      col = 'vermelho';
+    } else if (Math.round(lucro * 100) / 100 === 0) {
+      col = 'amarelo'; 
+    }
+    
+    const sinal = lucro > 0.00000001 ? '+' : '';
+    document.getElementById('simLucro').textContent = sinal + fmt(lucro);
+    document.getElementById('simLucro').className   = 'res-valor ' + col;
   }
 
-  function set(id, texto, cor) {
+  function set(id, texto, col) {
     const el = document.getElementById(id);
     el.textContent = texto;
-    el.className = 'res-valor ' + (cor ? cor + ' animado' : '');
+    el.className = 'res-valor ' + (col ? col + ' animado' : '');
     setTimeout(() => el.classList.remove('animado'), 400);
   }
 
   function limpar() {
     ['precoBTC','valorInvestido','precoVendaSim'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('taxaCompraInput').value = '0.10';
-    document.getElementById('taxaVendaInput').value  = '0.10';
+    document.getElementById('taxaCompraInput').value = '0,10';
+    document.getElementById('taxaVendaInput').value  = '0,10';
+    if (_usarBNB) {
+      toggleBNB(); 
+    }
+    const elAvisoMin = document.getElementById('avisoMinimo');
+    if (elAvisoMin) elAvisoMin.style.display = 'none';
     getTaxas();
     ['btcRecebido','precoMinVenda','liquido','simLiquido','simLucro'].forEach(id => {
       document.getElementById(id).textContent = '—';
@@ -583,7 +845,46 @@
     });
   }
 
-  getTaxas();
+  // CONTROLE DO PAINEL DE SELEÇÃO RÁPIDA (Atualiza todos os textos, placeholders, cores dinâmicas e logotipos oficiais)
+  function selecionarCrypto(coin) {
+    _cryptoSelecionada = coin;
+    
+    const coins = ['btc', 'usdt', 'ada', 'eth', 'sol'];
+    coins.forEach(c => {
+      const btn = document.getElementById('btn-crypto-' + c);
+      if (btn) {
+        if (c === coin) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      }
+    });
+
+    const config = COIN_CONFIG[coin];
+    
+    // ATUALIZAÇÃO DE CORES DINÂMICAS DA INTERFACE (Muda as variáveis de cor em tempo real)
+    document.documentElement.style.setProperty('--accent', config.color);
+    
+    // Atualização dinâmica do título com o logotipo colorido oficial
+    document.getElementById('titulo-icon-area').innerHTML = config.icon;
+    document.getElementById('painel-titulo').textContent = `Calculadora ${config.name}/BRL`;
+    
+    document.getElementById('label-preco').textContent = `Preço atual do ${config.name}`;
+    document.getElementById('precoBTC').placeholder = `Ex: ${config.placeholderPrice}`;
+    document.getElementById('label-recebe').textContent = `${config.name} que você recebe`;
+    document.getElementById('label-min-venda').textContent = `Preço mínimo de venda do ${config.name}`;
+    document.getElementById('label-chegar').textContent = `Se o ${config.name} chegar a (R$)`;
+
+    // Zera inputs para evitar conflitos na transição de moedas
+    document.getElementById('precoBTC').value = '';
+    document.getElementById('precoVendaSim').value = '';
+    
+    calcular();
+  }
+
+  // Inicializa o logotipo do Bitcoin no carregamento inicial
+  selecionarCrypto('btc');
 </script>
 
 </body>
