@@ -157,18 +157,20 @@
 
   input::placeholder { color: #444; }
 
+  /* GRADE DE RESULTADOS COM ALTURA COMPACTA */
   .resultado-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 8px;
+    gap: 6px; /* Reduzido para compactação vertical */
+    margin-bottom: 4px; /* Reduzido de 8px */
   }
 
+  /* CAIXAS DE RESULTADOS COM ALTURA COMPACTA */
   .res-card {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 10px;
+    padding: 4px 6px; /* Reduzido de 10px para estreitar verticalmente */
     text-align: center;
   }
 
@@ -182,7 +184,7 @@
     color: var(--muted2);
     letter-spacing: 1px;
     text-transform: uppercase;
-    margin-bottom: 4px;
+    margin-bottom: 2px; /* Reduzido de 4px para economizar altura */
     font-weight: 700;
   }
 
@@ -270,18 +272,20 @@
 
   button:hover { opacity: 0.85; }
 
+  /* DIVISÓRIA COMPACTA */
   .divider {
     border: none;
     border-top: 1px solid var(--border);
-    margin: 10px 0;
+    margin: 6px 0; /* Reduzido de 10px 0 */
   }
 
+  /* TÍTULO DE SEÇÃO COMPACTO */
   .section-title {
     font-size: 10px;
     color: var(--muted);
     letter-spacing: 2px;
     text-transform: uppercase;
-    margin-bottom: 6px;
+    margin-bottom: 4px; /* Reduzido de 6px */
     font-weight: 700;
   }
 
@@ -412,11 +416,6 @@
         </span>
       </div>
     </div>
-  </div>
-
-  <div class="card" style="text-align:center;">
-    <div class="res-label">Você recebe líquido ao vender no mínimo</div>
-    <div class="res-valor verde" id="liquido" style="font-size:16px; margin-top:2px;">—</div>
   </div>
 
   <hr class="divider">
@@ -586,7 +585,7 @@
     const investido = parseInputVal('valorInvestido');
 
     if (!preco || !investido || preco <= 0 || investido <= 0) {
-      ['btcRecebido','precoMinVenda','liquido'].forEach(id => {
+      ['btcRecebido','precoMinVenda'].forEach(id => {
         document.getElementById(id).textContent = '—';
       });
       const elAvisoMin = document.getElementById('avisoMinimo');
@@ -600,12 +599,9 @@
     const investidoLiq  = investido - taxaCompraVal;
     const btcRecebido   = investidoLiq / preco;
     const precoMin      = investido / (btcRecebido * (1 - tv));
-    const taxaVendaVal  = btcRecebido * precoMin * tv;
-    const liquidoVenda  = btcRecebido * precoMin - taxaVendaVal;
 
     set('btcRecebido',   fmtCrypto(btcRecebido), 'verde');
     set('precoMinVenda', fmt(precoMin), 'amarelo');
-    set('liquido',       fmt(liquidoVenda), 'verde');
 
     // Alerta de compra mínima na Binance (0.00001 BTC)
     const btcMinLimit = 0.00001;
@@ -723,7 +719,7 @@
     const elAvisoMin = document.getElementById('avisoMinimo');
     if (elAvisoMin) elAvisoMin.style.display = 'none';
     getTaxas();
-    ['btcRecebido','precoMinVenda','liquido','simLiquido','simLucro'].forEach(id => {
+    ['btcRecebido','precoMinVenda','simLiquido','simLucro'].forEach(id => {
       document.getElementById(id).textContent = '—';
       document.getElementById(id).className = 'res-valor';
     });
