@@ -37,27 +37,6 @@
     position: relative;
   }
 
-  /* ESTILOS DOS ELEMENTOS DE BTC FLUTUANTES NO FUNDO */
-  .bg-btc {
-    position: fixed;
-    left: 0;
-    top: 0;
-    pointer-events: none;
-    z-index: -1;
-    user-select: none;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 900;
-    animation: btcCorBandeira 8s linear infinite;
-  }
-
-  @keyframes btcCorBandeira {
-    0%   { color: #00ff4c; text-shadow: 0 0 12px #00ff4c, 0 0 24px rgba(0, 255, 76, 0.8); }
-    25%  { color: #ffea00; text-shadow: 0 0 12px #ffea00, 0 0 24px rgba(255, 234, 0, 0.8); }
-    50%  { color: #0055ff; text-shadow: 0 0 12px #0055ff, 0 0 24px rgba(0, 85, 255, 0.8); }
-    75%  { color: #ffffff; text-shadow: 0 0 12px #ffffff, 0 0 24px rgba(255, 255, 255, 0.8); }
-    100% { color: #00ff4c; text-shadow: 0 0 12px #00ff4c, 0 0 24px rgba(0, 255, 76, 0.8); }
-  }
-
   /* CAIXINHA DE AVISO (TOP) COM EFEITO JATEADO E TAMANHO PARA GALAXY A51 */
   .aviso {
     width: 100%;
@@ -799,56 +778,6 @@
       document.getElementById(id).className = 'res-valor';
     });
     resetTermometro();
-  }
-
-  // SCRIPT EXCLUSIVO PARA CONTROLE DOS BTCs FLUTUANTES NO FUNDO
-  function inicializarBtcFundo() {
-    const quantidade = 35; 
-    for (let i = 0; i < quantidade; i++) {
-      const btc = document.createElement('div');
-      btc.className = 'bg-btc';
-      btc.innerHTML = '₿';
-      
-      btc.style.fontSize = `${12 + Math.random() * 58}px`;
-      btc.style.opacity = `${0.35 + Math.random() * 0.5}`;
-      btc.style.animationDelay = `${-Math.random() * 8}s`; 
-      
-      document.body.appendChild(btc);
-
-      const xInicial = Math.random() * window.innerWidth;
-      const yInicial = Math.random() * window.innerHeight;
-      btc.style.transform = `translate(${xInicial}px, ${yInicial}px)`;
-
-      setTimeout(() => moverBtc(btc), 50);
-    }
-  }
-
-  function moverBtc(el) {
-    const novoX = Math.random() * (window.innerWidth - 80);
-    const novoY = Math.random() * (window.innerHeight - 80);
-    
-    const transformAtual = getComputedStyle(el).transform;
-    let xAtual = 0, yAtual = 0;
-    if (transformAtual && transformAtual !== 'none') {
-      const matrix = transformAtual.split('(')[1].split(')')[0].split(',');
-      xAtual = parseFloat(matrix[4]) || 0;
-      yAtual = parseFloat(matrix[5]) || 0;
-    }
-    
-    const distancia = Math.hypot(novoX - xAtual, novoY - yAtual);
-    const velocidade = 65 + Math.random() * 80; 
-    const duracao = (distancia / velocidade) * 1000;
-
-    el.style.transition = `transform ${duracao}ms linear`;
-    el.style.transform = `translate(${novoX}px, ${novoY}px)`;
-
-    setTimeout(() => moverBtc(el), duracao);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', inicializarBtcFundo);
-  } else {
-    inicializarBtcFundo();
   }
 </script>
 
