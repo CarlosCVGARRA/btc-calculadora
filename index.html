@@ -37,7 +37,7 @@
     position: relative;
   }
 
-  /* CAIXINHA DE AVISO (TOP) COM EFEITO JATEADO E TAMANHO PARA GALAXY A51 */
+  /* CAIXINHA DE AVISO (TOP) COM LINHA DOURADA FIXA */
   .aviso {
     width: 100%;
     max-width: 412px; /* Dimensão calibrada para o Galaxy A51 */
@@ -47,37 +47,22 @@
     border-radius: 12px;
     text-align: center;
     line-height: 1.4;
-    
-    /* Borda fina de 1px brilhante e efeito jateado (blur) */
-    border: 1px solid transparent;
-    background: 
-      linear-gradient(rgba(18, 18, 26, 0.85), rgba(18, 18, 26, 0.85)) padding-box, 
-      linear-gradient(120deg, #F3BA2F 30%, #fff6d1 50%, #F3BA2F 70%) border-box;
-    background-size: 100% 100%, 200% auto;
-    animation: shimmerBorda 4s linear infinite;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--accent);
+    background: rgba(18, 18, 26, 0.95);
   }
 
-  /* ESTRUTURA DA CALCULADORA (PAINEL) COM EFEITO JATEADO E TAMANHO PARA GALAXY A51 */
+  /* ESTRUTURA DA CALCULADORA COM LINHA DOURADA FIXA */
   .painel {
     width: 100%;
     max-width: 412px; /* Dimensão calibrada para o Galaxy A51 */
     border-radius: 20px;
     padding: 14px;
     box-shadow: 0 20px 40px rgba(0,0,0,.8);
-    
-    border: 1px solid transparent;
-    background: 
-      linear-gradient(rgba(19, 19, 30, 0.85), rgba(19, 19, 30, 0.85)) padding-box, 
-      linear-gradient(120deg, #F3BA2F 30%, #fff6d1 50%, #F3BA2F 70%) border-box;
-    background-size: 100% 100%, 200% auto;
-    animation: shimmerBorda 4s linear infinite;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--accent);
+    background: rgba(19, 19, 30, 0.95);
   }
 
-  /* CONTAINER E ANIMAÇÕES DO TÍTULO */
+  /* CONTAINER DO TÍTULO */
   .titulo-container {
     display: flex;
     align-items: center;
@@ -94,12 +79,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    
-    background: linear-gradient(120deg, #F3BA2F 30%, #fff6d1 50%, #F3BA2F 70%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shimmerTexto 4s linear infinite;
+    color: var(--accent); /* Dourado fixo */
   }
 
   .btc-simbolo {
@@ -114,17 +94,6 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     filter: drop-shadow(0 0 6px rgba(255, 223, 0, 0.8));
-  }
-
-  /* Animações de brilho */
-  @keyframes shimmerTexto {
-    0% { background-position: 200% center; }
-    100% { background-position: -200% center; }
-  }
-
-  @keyframes shimmerBorda {
-    0% { background-position: 0 0, 200% center; }
-    100% { background-position: 0 0, -200% center; }
   }
 
   @keyframes girarMoeda3D {
@@ -165,7 +134,7 @@
     box-shadow: 0 0 10px var(--accent);
   }
 
-  /* ESTILO DO R$ - COR DOURADA FIXA SEM ANIMAÇÃO */
+  /* ESTILO DO R$ - COR DOURADA FIXA */
   .prefix {
     font-family: 'Share Tech Mono', monospace;
     font-size: 15px;
@@ -203,7 +172,7 @@
     text-align: center;
   }
 
-  /* CAIXINHAS EM DESTAQUE COM BORDA DOURADA FIXA SEM ANIMAÇÃO */
+  /* CAIXINHAS EM DESTAQUE COM BORDA DOURADA FIXA */
   .res-card.destaque {
     border-color: var(--accent);
   }
@@ -280,13 +249,13 @@
     transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s ease;
   }
 
+  /* BOTÃO COM COR VERDE FIXA */
   button {
     width: 100%;
     border: none;
     padding: 11px;
     border-radius: 10px;
     background-color: #007a2f;
-    animation: brasilBtn 8s ease-in-out infinite;
     color: #fff;
     cursor: pointer;
     font-family: 'Plus Jakarta Sans', sans-serif;
@@ -297,14 +266,6 @@
     text-shadow: 0 1px 3px rgba(0,0,0,.5);
     margin-top: 4px;
     transition: opacity .2s;
-  }
-
-  @keyframes brasilBtn {
-    0%   { background-color: #007a2f; }
-    25%  { background-color: #c9a800; }
-    50%  { background-color: #002776; }
-    75%  { background-color: #1a5276; }
-    100% { background-color: #007a2f; }
   }
 
   button:hover { opacity: 0.85; }
@@ -324,17 +285,17 @@
     font-weight: 700;
   }
 
-  /* RODAPÉ BRILHANTE E LEGÍVEL CONTRA O FUNDO PRETO */
+  /* RODAPÉ */
   .footer {
     text-align: center;
-    color: #a0aec0; /* Tom de cinza-claro muito mais visível */
+    color: #a0aec0;
     font-size: 10.5px;
     line-height: 1.6;
     margin-top: 4px;
   }
 
   .footer strong { 
-    color: #ffffff; /* Branco puro no nome principal */
+    color: #ffffff;
   }
 
   @keyframes fadeIn {
