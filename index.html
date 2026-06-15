@@ -165,19 +165,14 @@
     box-shadow: 0 0 10px var(--accent);
   }
 
-  /* ESTILO DO R$ */
+  /* ESTILO DO R$ - COR DOURADA FIXA SEM ANIMAÇÃO */
   .prefix {
     font-family: 'Share Tech Mono', monospace;
     font-size: 15px;
     font-weight: 700;
     white-space: nowrap;
     display: inline-block;
-
-    background: linear-gradient(120deg, #F3BA2F 30%, #fff6d1 50%, #F3BA2F 70%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shimmerTexto 4s linear infinite;
+    color: var(--accent);
     filter: drop-shadow(0 0 3px rgba(243, 186, 47, 0.4));
   }
 
@@ -208,15 +203,9 @@
     text-align: center;
   }
 
-  /* CAIXINHAS EM DESTAQUE COM BORDA FINA ANIMADA */
+  /* CAIXINHAS EM DESTAQUE COM BORDA DOURADA FIXA SEM ANIMAÇÃO */
   .res-card.destaque {
-    border-radius: 12px;
-    border: 1px solid transparent;
-    background: 
-      linear-gradient(var(--card), var(--card)) padding-box, 
-      linear-gradient(120deg, #F3BA2F 30%, #fff6d1 50%, #F3BA2F 70%) border-box;
-    background-size: 100% 100%, 200% auto;
-    animation: shimmerBorda 4s linear infinite;
+    border-color: var(--accent);
   }
 
   .res-label {
